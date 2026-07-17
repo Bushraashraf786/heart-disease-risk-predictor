@@ -2,6 +2,11 @@ import streamlit as st
 import joblib
 import numpy as np
 
+st.write("Python is working")
+
+import joblib
+st.write("Joblib imported successfully")
+
 # Page setup
 st.set_page_config(page_title="CardioCheck AI", page_icon="⚡", layout="centered")
 
