@@ -2,13 +2,13 @@ import streamlit as st
 import joblib
 import numpy as np
 
-st.set_page_config(page_title="CardioCheck AI", page_icon="⚡", layout="centered")
+st.set_page_config(page_title="CardioCheck AI", page_icon=":anatomical_heart:", layout="centered")
 
 model = joblib.load("heart_disease_model.pkl")
 feature_names = joblib.load("feature_names.pkl")
 
-st.title("⚡ CardioCheck AI")
-st.write("Heart Disease Risk Predictor — fill in the patient details below.")
+st.title("CardioCheck AI")
+st.write("Heart Disease Risk Predictor - fill in the patient details below.")
 
 st.divider()
 
@@ -51,7 +51,7 @@ with col2:
 
 st.divider()
 
-if st.button("🔍 Predict", type="primary", use_container_width=True):
+if st.button("Predict", type="primary", use_container_width=True):
     values = {
         "age": age,
         "sex": 1 if sex == "Male" else 0,
@@ -61,3 +61,23 @@ if st.button("🔍 Predict", type="primary", use_container_width=True):
         "fbs": 1 if fbs == "Yes" else 0,
         "restecg": restecg,
         "thalach": thalach,
+        "exang": 1 if exang == "Yes" else 0,
+        "oldpeak": oldpeak,
+        "slope": slope,
+        "ca": ca,
+        "thal": thal,
+    }
+
+    ordered_input = [values[feat] for feat in feature_names]
+    X = np.array(ordered_input).reshape(1, -1)
+
+    prediction = model.predict(X)[0]
+    proba = model.predict_proba(X)[0]
+    confidence = proba[prediction] * 100
+
+    if prediction == 1:
+        st.error(f"High risk of heart disease (confidence: {confidence:.1f}%)")
+    else:
+        st.success(f"Low risk of heart disease (confidence: {confidence:.1f}%)")
+
+    st.caption("This is a machine learning estimate, not a medical diagnosis. Please consult a doctor for any real health concerns.")
